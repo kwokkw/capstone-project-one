@@ -1,0 +1,44 @@
+{% import '_macros.html' as macros %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Real Estate Dashboard</title>
+
+  <link rel="stylesheet"
+        href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
+  <script src="https://unpkg.com/jquery"></script>
+  <script src="https://unpkg.com/popper"></script>
+  <script src="https://unpkg.com/bootstrap"></script>
+
+  <!-- TODO: UPDATE FONTAWESOME -->
+  <link rel="stylesheet"href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+  
+  <!-- TODO: UPDATE CSS -->  
+  <!-- <link rel="stylesheet" href="/static/stylesheets/style.css"> -->
+
+  <!-- TODO: UPDATE FAVICON -->
+  <!-- <link rel="shortcut icon" href="/static/favicon.ico"> -->
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+<nav class="navbar navbar-expand">
+  <div class="container-fluid">
+
+   
+      <li><a href="{{ url_for('signup') }}">Sign up</a></li> 
+
+  </div>
+</nav>
+
+{% block content %}
+{% endblock %}
+
+<!-- Getting Axios -->
+<script src="https://unpkg.com/axios/dist/axios.js"></script>
+<!-- <script src="/static/app.js"></script> -->
+</body>
+</html>
+

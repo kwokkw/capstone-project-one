@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Homepage</h1>
+
+{% for prop in properties %}
+
+    <h2>{{prop.address}}</h2>
+    <p>Price: {{prop.price}}</p>
+    <p>Bedrooms: {{prop.bedrooms}}</p>
+    <p>Bathrooms: {{prop.bathrooms}}</p>
+    <img src="{{prop.img_src}}" alt="{{prop.address}}">
+
+{% endfor %}
+
+{% endblock %}

@@ -59,15 +59,23 @@ It is focused on building a database-driven website powered by an external API, 
 
 ### Links
 
-- Solution URL: [Repository](https://github.com/kwokkw/single-price-grid-component-master)
-- Live Site URL: [live site URL]( https://kwokkw.github.io/single-price-grid-component-master/)
-
 ## My process
 
-- Edited README.md
-- Started with mobile design 
-- Created index.html in design folder
-- Created style.css
+1.  Planning & Research
+  - Goal Setting: Set project goals focused on creating a database-driven real estate dashboard.
+  - Feature Requirements: Prioritized core functionalities, such as user authentication, property listings, and saving favorites.
+  - API Selection
+
+2.  Setting Up the Environment
+
+3.  Database Modeling
+  - Models Defined: Designed `User`, `Property`, and `Favorite` tables in `models.py`
+  - Relationships: Created relationships between tables to link users with their favorite properties.
+  - Data Seeding: Seeded sample data for testing purposes. 
+
+4.  Building Core Features
+
+5.  Testing & Debugging 
 
 ### Built with
 

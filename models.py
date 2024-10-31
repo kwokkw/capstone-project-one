@@ -29,9 +29,33 @@ class User(db.Model):
     # Define a non-nullable password column
     hashed_password = db.Column(db.String(120), nullable=False)
 
+    # Define a many-to-many relationship
+    # Delete the favorites record when it's no longer associated with user
+    favorites = db.relationship('Favorites', backref='user', cascade='all, delete-orphan')
+
     # Dunder methods (double underscores) returns a string representation used for debugging
     def __repr__(self):
         return f'<User #{self.id}: {self.username}>'
+
+    @classmethod
+    def signup(cls, username, email, password):
+        """ Sign up user, hashes password, adds user to system """
+
+        # Hashed the password using Bcrypt
+        hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
+
+        # Create a new User instance with the hashed password
+        user = User(
+            username=username,
+            email=email,
+            password=hashed_pwd
+        )
+
+        # Adds the new user to database session
+        db.session.add(user)
+
+        # Returns the new user instance
+        return user
 
 
 class Property(db.Model):
@@ -42,22 +66,32 @@ class Property(db.Model):
 
     # Define a primary key column
     id = db.Column(db.Integer, primary_key=True)
+
+    # Define a non-nullable, unique zpid column
+    zpid = db.Column(db.String, unique=True, nullable=False)
     
-    # Defin a non-nullable title column
-    title = db.Column(db.String(200), nullable=False)
+    # Define a non-nullable title column
+    address = db.Column(db.String(200), nullable=False)
 
-    # Defin a non-nullable description column
-    description = db.Column(db.Text, nullable=False)
-
-    # Defin a non-nullable price column
+    # Define a non-nullable price column
     price = db.Column(db.Integer, nullable=False)
 
-    # Defin a non-nullable location column
-    location = db.Column(db.String(200), nullable=False)
+    # Defin a bedrooms column
+    bedrooms = db.Column(db.Integer)
+
+    # Defin a bathrooms column
+    bathrooms = db.Column(db.Integer)
+
+    # Defin a living area column
+    living_area = db.Column(db.Integer)
 
     # TODO: Provide a default image url
-    # Defin a non-nullable image_url column
-    image_url = db.Column(db.String(200))
+    # Define a non-nullable image_url column
+    image_src = db.Column(db.String(200))
+
+    # Define a many-to-many relationship
+    favorites = db.relationship('Favorites', backref='property', cascade='all, delete')
+
 
     # Dunder methods (double underscores) returns a string representation used for debugging
     def __repr__(self):
@@ -77,9 +111,6 @@ class Favorites(db.Model):
     # Define relationship
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id'), primary_key=True)
-
-    user = db.relationship('User', backref='favorites')
-    property = db.relationship('Property', backref='favorites')
 
 
 # Establishes a connection between a FLASK APPLICATION and a SQLAlchemy DATABASE
