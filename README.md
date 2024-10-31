@@ -126,7 +126,7 @@ Project Timeline
 
   - **Task 1**: Set up Flask application and project structure (1 hour)
     - Create necessary directories and files (`app.py`, `README.md`, etc.).
-    - Initialize virtual environment and install dependencies.
+    - Initialize virtual environment and install dependencies. 
   
   - **Task 2**: Database Design & Implementation (2 hours)
     - Define schema for `Users`, `Properties`, and `Favorites` tables.
