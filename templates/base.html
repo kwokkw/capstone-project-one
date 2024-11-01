@@ -27,11 +27,26 @@
 <nav class="navbar navbar-expand">
   <div class="container-fluid">
 
-   
-      <li><a href="{{ url_for('signup') }}">Sign up</a></li> 
+    <div class="navbar-header">
+      <a href="{{ url_for('homepage') }}" class="navbar-brand">
+        <img src="" alt="logo">
+        <span>Real Estate Dashboard</span>
+      </a>
+    </div>
+
+    {% if g.user %}
+      <a href="{{ url_for('logout') }}">Logout</a>
+    {% else %}
+      <a href="{{ url_for('signup') }}">Sign up</a>
+      <a href="{{ url_for('login') }}">Login</a>
+    {% endif %}
 
   </div>
 </nav>
+
+{% for category, message in get_flashed_messages(with_categories=True) %}
+<div class="alert alert-{{ category }}">{{ message }}</div>
+{% endfor %}
 
 {% block content %}
 {% endblock %}

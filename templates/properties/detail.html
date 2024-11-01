@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Property Details</h1>
+
+<p><strong>Address:</strong> {{ prop.address }}</p>
+    <p><strong>Price:</strong> ${{ prop.price }}</p>
+    <p><strong>Bedrooms:</strong> {{ prop.bedrooms }}</p>
+    <p><strong>Bathrooms:</strong> {{ prop.bathrooms }}</p>
+    <p><strong>Living Area:</strong> {{ prop.living_area }}</p>
+    <img src="{{ prop.img_src }}" alt="Property Image">
+    <br>
+    <a href="{{ url_for('homepage') }}">Back to Listings</a>
+
+{% endblock %}

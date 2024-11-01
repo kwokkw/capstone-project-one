@@ -27,7 +27,7 @@ class User(db.Model):
     username = db.Column(db.String(100), nullable=False, unique=True)
 
     # Define a non-nullable password column
-    hashed_password = db.Column(db.String(120), nullable=False)
+    hashed_password = db.Column(db.Text, nullable=False)
 
     # Define a many-to-many relationship
     # Delete the favorites record when it's no longer associated with user
@@ -48,7 +48,7 @@ class User(db.Model):
         user = User(
             username=username,
             email=email,
-            password=hashed_pwd
+            hashed_password=hashed_pwd
         )
 
         # Adds the new user to database session
@@ -57,6 +57,18 @@ class User(db.Model):
         # Returns the new user instance
         return user
 
+    @classmethod
+    def authenticate(cls, username, password):
+
+        user = cls.query.filter_by(username=username).first()
+
+        if user:
+            is_auth = bcrypt.check_password_hash(user.hashed_password, password)
+            if is_auth:
+                return user
+
+        else:
+            return False
 
 class Property(db.Model):
     """ Properties in the database. """

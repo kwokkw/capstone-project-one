@@ -1,1 +1,10 @@
-<h1>sign up</h1>
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="POST">
+    {{ macros.render_form(form)}}
+
+    <button class="btn btn-primary btn-lg btn-block">Sign me up!</button>
+</form>
+{% endblock %}
