@@ -162,6 +162,25 @@ def prop_detail(prop_id):
 
     return render_template('/properties/detail.html', prop=prop)
 
+
+@app.route('/properties/<int:prop_id>/favorite', methods=['POST'])
+@login_required
+def add_to_favorites(prop_id):
+
+    prop = Property.query.get_or_404(prop_id)
+    g.user.favorite.append(prop)
+    db.session.commit()
+    flash('Property added to favorites!')
+
+    return redirect(url_for('homepage'))
+
+@app.route('/users/favorite', methods=['GET'])
+@login_required
+def favorites_list():
+
+    return render_template('/users/favorites.html', favorites=g.user.favorites)
+
+
 ### FETCH DATA FROM API
 
 @app.route('/api/properties', methods=['GET'])

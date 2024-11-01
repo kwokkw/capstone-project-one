@@ -70,6 +70,7 @@ class User(db.Model):
         else:
             return False
 
+
 class Property(db.Model):
     """ Properties in the database. """
 

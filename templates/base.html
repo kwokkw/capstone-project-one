@@ -9,15 +9,10 @@
 
   <link rel="stylesheet"
         href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
-  <script src="https://unpkg.com/jquery"></script>
   <script src="https://unpkg.com/popper"></script>
   <script src="https://unpkg.com/bootstrap"></script>
 
-  <!-- TODO: UPDATE FONTAWESOME -->
-  <link rel="stylesheet"href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
-  
-  <!-- TODO: UPDATE CSS -->  
-  <!-- <link rel="stylesheet" href="/static/stylesheets/style.css"> -->
+  <link rel="stylesheet" href="/static/stylesheets/style.css">
 
   <!-- TODO: UPDATE FAVICON -->
   <!-- <link rel="shortcut icon" href="/static/favicon.ico"> -->
@@ -35,6 +30,7 @@
     </div>
 
     {% if g.user %}
+      <a href="{{ url_for('favorites_list')}}">Favorite Homes</a>
       <a href="{{ url_for('logout') }}">Logout</a>
     {% else %}
       <a href="{{ url_for('signup') }}">Sign up</a>
@@ -53,6 +49,10 @@
 
 <!-- Getting Axios -->
 <script src="https://unpkg.com/axios/dist/axios.js"></script>
+
+<!-- fontawesome -->
+<script src="https://kit.fontawesome.com/ac8a886e27.js" crossorigin="anonymous"></script>
+
 <!-- <script src="/static/app.js"></script> -->
 </body>
 </html>

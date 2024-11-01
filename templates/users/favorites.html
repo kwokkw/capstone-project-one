@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>My Favorite Properties</h1>
+
+    <div class="favorites-list">
+        {% for prop in favorites %}
+            <div class="favorite-item">
+                <a href="{{ url_for('prop_detail', prop_id=prop.id) }}">
+                    <img src="{{ prop.imgSrc }}" alt="{{ prop.address }}">
+                    <h3>{{ prop.address }}</h3>
+                    <p>Price: ${{ prop.price }}</p>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

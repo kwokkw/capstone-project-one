@@ -11,6 +11,13 @@
             <a href="{{ url_for('prop_detail', prop_id=prop.id) }}">
                 {{ prop.address }} - ${{ prop.price }}
             </a>
+            <button class="btn">
+                {% if prop in g.user.favorites%}
+                    <i class="fa-solid fa-heart"></i>
+                {% else %}
+                    <i class="fa-regular fa-heart"></i>
+                {% endif %}
+            </button>
         </li>
     {% endfor %}
 </ul>
