@@ -2,58 +2,66 @@
 
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Real Estate Dashboard</title>
 
-<head>
-  <meta charset="UTF-8">
-  <title>Real Estate Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap/dist/css/bootstrap.css"
+    />
+    <script src="https://unpkg.com/popper"></script>
+    <script src="https://unpkg.com/bootstrap"></script>
 
-  <link rel="stylesheet"
-        href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
-  <script src="https://unpkg.com/popper"></script>
-  <script src="https://unpkg.com/bootstrap"></script>
+    <link rel="stylesheet" href="/static/stylesheets/style.css" />
 
-  <link rel="stylesheet" href="/static/stylesheets/style.css">
+    <!-- TODO: UPDATE FAVICON -->
+    <!-- <link rel="shortcut icon" href="/static/favicon.ico"> -->
+  </head>
 
-  <!-- TODO: UPDATE FAVICON -->
-  <!-- <link rel="shortcut icon" href="/static/favicon.ico"> -->
-</head>
+  <body class="{% block body_class %}{% endblock %}">
 
-<body class="{% block body_class %}{% endblock %}">
-<nav class="navbar navbar-expand">
-  <div class="container-fluid">
+    <header id="header">
+      <nav class="navbar navbar-expand">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a href="{{ url_for('homepage') }}" class="navbar-brand">
+              <img src="" alt="logo" />
+              <span>Real Estate Dashboard</span>
+            </a>
+          </div>
 
-    <div class="navbar-header">
-      <a href="{{ url_for('homepage') }}" class="navbar-brand">
-        <img src="" alt="logo">
-        <span>Real Estate Dashboard</span>
-      </a>
-    </div>
+          {% if g.user %}
+          <a href="{{ url_for('favorites_list')}}">Favorite Homes</a>
+          <a href="{{ url_for('logout') }}">Logout</a>
+          <a href="{{ url_for('profile') }}">Profile</a>
+          {% else %}
+          <a href="{{ url_for('signup') }}">Sign up</a>
+          <a href="{{ url_for('login') }}">Login</a>
+          {% endif %}
+        </div>
+      </nav>
+    </header>
 
-    {% if g.user %}
-      <a href="{{ url_for('favorites_list')}}">Favorite Homes</a>
-      <a href="{{ url_for('logout') }}">Logout</a>
-    {% else %}
-      <a href="{{ url_for('signup') }}">Sign up</a>
-      <a href="{{ url_for('login') }}">Login</a>
-    {% endif %}
+    <main id="main-content">
+      {% for category, message in get_flashed_messages(with_categories=True) %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %} {% block content %} {% endblock %}
+    </main>
 
-  </div>
-</nav>
+    <footer id="footer">
+      <p>&copy; 2024 Real Estate Dashboard</p>
+    </footer>
 
-{% for category, message in get_flashed_messages(with_categories=True) %}
-<div class="alert alert-{{ category }}">{{ message }}</div>
-{% endfor %}
+    <!-- Getting Axios -->
+    <script src="https://unpkg.com/axios/dist/axios.js"></script>
 
-{% block content %}
-{% endblock %}
+    <!-- fontawesome -->
+    <script
+      src="https://kit.fontawesome.com/ac8a886e27.js"
+      crossorigin="anonymous"
+    ></script>
 
-<!-- Getting Axios -->
-<script src="https://unpkg.com/axios/dist/axios.js"></script>
-
-<!-- fontawesome -->
-<script src="https://kit.fontawesome.com/ac8a886e27.js" crossorigin="anonymous"></script>
-
-<!-- <script src="/static/app.js"></script> -->
-</body>
+    <script src="/static/app.js"></script>
+  </body>
 </html>
-

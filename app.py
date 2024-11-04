@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, redirect, url_for, session, flash, g
+from flask import Flask, render_template, redirect, url_for, session, flash, g, jsonify
 from models import db, connect_db, User, Property, Favorites
 from forms import SignupForm, LoginForm, UserEditForm
 from sqlalchemy.exc import IntegrityError
@@ -19,7 +19,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql:///real_estate_dashboard')
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_ECHO'] = False
 
 API_KEY = os.environ.get('API_KEY')
 CURR_USER_KEY = 'curr_user'
@@ -41,7 +41,6 @@ def login_required(f):
 
     @wraps(f)
     def check_login(*args, **kwargs):
-
         if not g.user:
             flash('Access unauthorized.', 'danger')
             return redirect(url_for('homepage'))
@@ -93,10 +92,20 @@ def homepage():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-
     form = SignupForm()
 
     if form.validate_on_submit():
+        # Check if username already exists
+        if User.query.filter_by(username=form.username.data).first():
+            flash("Username already taken", 'danger')
+            return render_template('users/signup.html', form=form)
+
+        # Check if email already exists
+        if User.query.filter_by(email=form.email.data).first():
+            flash("Email already taken", 'danger')
+            return render_template('users/signup.html', form=form)
+
+        # If no conflicts, proceed to create the new user
         try:
             user = User.signup(
                 username=form.username.data, 
@@ -104,13 +113,13 @@ def signup():
                 password=form.password.data
             )
             db.session.commit()
+            do_login(user)
+            return redirect(url_for('homepage'))
 
         except IntegrityError:
-            flash("Username already taken", 'danger')
+            db.session.rollback()
+            flash("An unexpected error occurred. Please try again.", 'danger')
             return render_template('users/signup.html', form=form)
-
-        do_login(user)
-        return redirect(url_for('homepage'))
 
     return render_template('/users/signup.html', form=form)
 
@@ -139,16 +148,24 @@ def login():
 def logout():
     """Handle logout of user."""
 
-    flash("You have been logout.", 'primary')
+    flash('You have been logout.', 'primary')
     do_logout()
     return redirect(url_for('login'))
 
 
-@app.route('/users/profile', methods=['GET'])
+@app.route('/users/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
 
     form = UserEditForm()
+
+    if form.validate_on_submit():
+        breakpoint()
+        g.user.username = form.username.data
+        g.user.email = form.email.data
+        db.session.commit()
+        flash("Account settings updated!", "success")
+        return redirect(url_for('profile'))
 
     return render_template('users/edit.html', form=form)
 
@@ -163,22 +180,31 @@ def prop_detail(prop_id):
     return render_template('/properties/detail.html', prop=prop)
 
 
-@app.route('/properties/<int:prop_id>/favorite', methods=['POST'])
+@app.route('/favorites/<int:prop_id>/', methods=['POST'])
 @login_required
 def add_to_favorites(prop_id):
+    try:
+        prop = Property.query.get_or_404(prop_id)
 
-    prop = Property.query.get_or_404(prop_id)
-    g.user.favorite.append(prop)
-    db.session.commit()
-    flash('Property added to favorites!')
+        if prop in g.user.properties:
+            g.user.properties.remove(prop)
+            db.session.commit()
+            return jsonify({"favorite": False, "message": "Property removed from favorites!"})
+        else:
+            g.user.properties.append(prop)
+            db.session.commit()
+            return jsonify({"favorite": True, "message": "Property added to favorites!"})
+    except Exception as e:
+        print("Error:", e)  # Prints the error to the console
+        breakpoint()
+        return jsonify({"success": False, "message": "An error occurred while adding to favorites"}), 500
 
-    return redirect(url_for('homepage'))
 
 @app.route('/users/favorite', methods=['GET'])
 @login_required
 def favorites_list():
 
-    return render_template('/users/favorites.html', favorites=g.user.favorites)
+    return render_template('/users/favorites.html', properties=g.user.properties)
 
 
 ### FETCH DATA FROM API

@@ -1,27 +1,41 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block content %}
+<div class="container my-4">
+  <h1 class="text-center">Properties for Sale</h1>
 
-{% block content %}
-<h1>Properties for Sale</h1>
-
-{% for prop in properties %}
-
-<ul>
+  <div class="row property-list">
     {% for prop in properties %}
-        <li>
-            <a href="{{ url_for('prop_detail', prop_id=prop.id) }}">
-                {{ prop.address }} - ${{ prop.price }}
-            </a>
-            <button class="btn">
-                {% if prop in g.user.favorites%}
-                    <i class="fa-solid fa-heart"></i>
-                {% else %}
-                    <i class="fa-regular fa-heart"></i>
-                {% endif %}
-            </button>
-        </li>
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <img
+          src="{{ prop.imgSrc }}"
+          class="card-img-top"
+          alt="property Image"
+        />
+        <div class="card-body">
+          <a href="{{ url_for('prop_detail', prop_id=prop.id) }}">
+            <h5 class="card-title">${{ prop.price }}</h5>
+            <p class="card-text">
+              <strong>Bedrooms:</strong> {{ prop.bedrooms }}<br />
+              <strong>Bathrooms:</strong> {{ prop.bathrooms }}<br />
+              {{ prop.address }}
+            </p>
+          </a>
+          <!-- TODO: LET'S REMOVE THE BUTTON -->
+          <!-- TODO: CHANGE IT TO A HEART -->
+          <!-- TODO: MOVE THE HEART TO TOP-RIGHT CORNER -->
+          {% if g.user %}
+          <button class="add-favorite-btn" data-id="{{ prop.id }}">
+            {% if prop in g.user.properties %}
+            <i class="fa-solid fa-heart"></i>
+            {% else %}
+            <i class="fa-regular fa-heart"></i>
+            {% endif %}
+          </button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
     {% endfor %}
-</ul>
-
-{% endfor %}
-
+  </div>
+</div>
 {% endblock %}

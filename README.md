@@ -194,3 +194,9 @@ Project Timeline
   - **Task 12**: Deployment & Documentation (1 hour)
     - Deploy the application to a platform like Heroku or Vercel.
     - Complete README with installation steps, usage instructions, and "Built With" section.
+
+
+- Setup an user setting/dashboard route.
+- Add styling
+- Use API to update properties dynamically
+- Add a property picture

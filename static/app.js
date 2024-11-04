@@ -1,22 +1,26 @@
-const BASE_URL = "https://zillow-com1.p.rapidapi.com/people/profileDetails"
+document.addEventListener("DOMContentLoaded", () => {
+  const favoritesContainer = document.querySelector(".property-list");
 
-async function fetchProperties() {
+  favoritesContainer.addEventListener("click", function (e) {
+    btn = e.target.closest(".add-favorite-btn");
+    if (btn) {
+      propId = parseInt(btn.getAttribute("data-id"));
+      toggleFavoriteProps(propId, btn);
+    }
+  });
 
-    const options = {
-        method: 'GET',
-        url: 'https://zillow-com1.p.rapidapi.com/property',
-        params: {zpid: '2080998890'},
-        headers: {
-          'x-rapidapi-key': '18704e4f37msh906ac36ebb2f57ep1aa40ajsn554e2b1fc365',
-          'x-rapidapi-host': 'zillow-com1.p.rapidapi.com'
-        }
-      };
-      
-      try {
-          const response = await axios.request(options);
-          console.log(response.data);
-      } catch (error) {
-          console.error(error);
+  async function toggleFavoriteProps(propId, btn) {
+    try {
+      const resp = await axios.post(`/favorites/${propId}`);
+
+      // Update button appearance based on the response
+      if (resp.data.favorite) {
+        btn.innerHTML = '<i class="fa-solid fa-heart"></i>';
+      } else {
+        btn.innerHTML = '<i class="fa-regular fa-heart"></i>';
       }
-    
-}
+    } catch (e) {
+      console.error(e);
+    }
+  }
+});

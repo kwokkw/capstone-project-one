@@ -5,7 +5,7 @@
     <h1>My Favorite Properties</h1>
 
     <div class="favorites-list">
-        {% for prop in favorites %}
+        {% for prop in properties %}
             <div class="favorite-item">
                 <a href="{{ url_for('prop_detail', prop_id=prop.id) }}">
                     <img src="{{ prop.imgSrc }}" alt="{{ prop.address }}">

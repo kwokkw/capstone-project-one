@@ -2,6 +2,9 @@
 
 {% block content %}
 
+<form method="POST">
 {{ macros.render_form(form, exclude_fields=['password']) }}
+<button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
 
 {% endblock %}

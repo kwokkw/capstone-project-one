@@ -1,0 +1,39 @@
+/* RESET */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#header {
+    border-bottom: solid 1px black;
+    padding: 10px;
+  }
+
+/* CARDS */
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.card-title {
+    font-weight: bold;
+}
+
+.add-favorite-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 2rem;
+    border: none;
+    background-color: transparent;
+}
+
+.add-favorite-btn:hover i {
+    color: #f00;
+}
+
+.fa-solid {
+    color: red;
+}

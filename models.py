@@ -31,7 +31,7 @@ class User(db.Model):
 
     # Define a many-to-many relationship
     # Delete the favorites record when it's no longer associated with user
-    favorites = db.relationship('Favorites', backref='user', cascade='all, delete-orphan')
+    properties = db.relationship('Property', secondary='favorites', backref='users')
 
     # Dunder methods (double underscores) returns a string representation used for debugging
     def __repr__(self):
@@ -83,7 +83,7 @@ class Property(db.Model):
     # Define a non-nullable, unique zpid column
     zpid = db.Column(db.String, unique=True, nullable=False)
     
-    # Define a non-nullable title column
+    # Define a non-nullable address column
     address = db.Column(db.String(200), nullable=False)
 
     # Define a non-nullable price column
@@ -102,13 +102,9 @@ class Property(db.Model):
     # Define a non-nullable image_url column
     image_src = db.Column(db.String(200))
 
-    # Define a many-to-many relationship
-    favorites = db.relationship('Favorites', backref='property', cascade='all, delete')
-
-
     # Dunder methods (double underscores) returns a string representation used for debugging
     def __repr__(self):
-        return f'<Property #{self.id}: {self.title} - {self.description}>'
+        return f'<Property #{self.id}: {self.address} - {self.description}>'
 
 
 class Favorites(db.Model):
@@ -117,13 +113,10 @@ class Favorites(db.Model):
     # Specifies the database table name
     __tablename__ = 'favorites'
 
-    # Define a primary key column
-    id = db.Column(db.Integer, primary_key=True)
-
     # TODO: If user (or property) is deleted, the record associated will be deleted too.
     # Define relationship
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    property_id = db.Column(db.Integer, db.ForeignKey('properties.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True, nullable=False)
+    property_id = db.Column(db.Integer, db.ForeignKey('properties.id'), primary_key=True, nullable=False)
 
 
 # Establishes a connection between a FLASK APPLICATION and a SQLAlchemy DATABASE
