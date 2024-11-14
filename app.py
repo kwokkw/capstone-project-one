@@ -5,6 +5,7 @@ from models import db, connect_db, User, Property, Favorites
 from forms import SignupForm, LoginForm, UserEditForm
 from sqlalchemy.exc import IntegrityError
 from functools import wraps
+from flask_debugtoolbar import DebugToolbarExtension
 
 import requests
 
@@ -17,14 +18,17 @@ app = Flask(__name__)
 # Configuration settings
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql:///real_estate_dashboard')
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_ECHO'] = False
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+
 
 API_KEY = os.environ.get('API_KEY')
 CURR_USER_KEY = 'curr_user'
 
 connect_db(app)
+debug = DebugToolbarExtension(app)
 
 
 @app.before_request
@@ -73,7 +77,7 @@ def save_properties_to_database(properties):
             bedrooms=prop["bedrooms"],
             bathrooms=prop["bathrooms"],
             living_area=prop["livingArea"],
-            image_src=prop["imgSrc"],
+            # image_src=prop["imgSrc"],
         )
 
         db.session.add(new_prop)
@@ -84,8 +88,10 @@ def save_properties_to_database(properties):
 def homepage():
 
     properties = Property.query.all()
+    loginForm = LoginForm()
+    signupForm = SignupForm()
 
-    return render_template('home.html', properties=properties)
+    return render_template('home.html', properties=properties, loginForm=loginForm, signupForm=signupForm)
 
 
 ### USERS ROUTES
@@ -97,8 +103,7 @@ def signup():
     if form.validate_on_submit():
         # Check if username already exists
         if User.query.filter_by(username=form.username.data).first():
-            flash("Username already taken", 'danger')
-            return render_template('users/signup.html', form=form)
+            form.username.errors.append("Username already taken")
 
         # Check if email already exists
         if User.query.filter_by(email=form.email.data).first():
@@ -114,6 +119,7 @@ def signup():
             )
             db.session.commit()
             do_login(user)
+            flash('Welcome ', user.username)
             return redirect(url_for('homepage'))
 
         except IntegrityError:
@@ -121,7 +127,7 @@ def signup():
             flash("An unexpected error occurred. Please try again.", 'danger')
             return render_template('users/signup.html', form=form)
 
-    return render_template('/users/signup.html', form=form)
+    return redirect(url_for('homepage'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -150,7 +156,7 @@ def logout():
 
     flash('You have been logout.', 'primary')
     do_logout()
-    return redirect(url_for('login'))
+    return redirect(url_for('homepage'))
 
 
 @app.route('/users/profile', methods=['GET', 'POST'])
@@ -168,16 +174,6 @@ def profile():
         return redirect(url_for('profile'))
 
     return render_template('users/edit.html', form=form)
-
-
-### PROPERTIES ROUTES
-
-@app.route('/properties/<int:prop_id>', methods=['GET'])
-def prop_detail(prop_id):
-
-    prop = Property.query.get_or_404(prop_id)
-
-    return render_template('/properties/detail.html', prop=prop)
 
 
 @app.route('/favorites/<int:prop_id>/', methods=['POST'])
@@ -233,3 +229,58 @@ def get_properties():
 
     else:
         return ("Error: Unable to fetch data"), 500
+
+
+@app.route('/api/property_detail/<int:prop_id>', methods=['GET'])
+def get_prop_detail(prop_id):
+
+    prop = Property.query.get_or_404(prop_id)    
+
+    if prop.is_fetched:
+
+        return render_template('/properties/detail.html', prop=prop)
+    
+    url = "https://zillow-com1.p.rapidapi.com/property"
+
+    querystring = {"zpid":prop.zpid}
+
+    headers = {
+        "x-rapidapi-key": API_KEY,
+        "x-rapidapi-host": "zillow-com1.p.rapidapi.com"
+    }
+
+    response = requests.get(url, headers=headers, params=querystring)
+
+    prop.description = response.json().get("description")
+    prop.monthly_hoa_fee = response.json().get("monthlyHoaFee")
+    prop.annual_homeowners_insurance = response.json().get("annualHomeownersInsurance")
+    prop.tax_annual_amount = response.json().get("taxAnnualAmount")
+    prop.is_fetched = True
+
+    db.session.commit()
+
+    # return (response.json())
+
+    return render_template('/properties/detail.html', prop=prop)
+
+
+@app.route('/api/get-interest-rate')
+def get_interest_rate():
+
+    try:
+        url = "https://zillow-com1.p.rapidapi.com/mortgageRates"
+
+        querystring = {"program":"Fixed30Year","state":"US","refinance":"false","loanType":"Conventional","loanAmount":"Conforming","loanToValue":"Normal","creditScore":"Low","duration":"30"}
+
+        headers = {
+            "x-rapidapi-key": API_KEY,
+            "x-rapidapi-host": "zillow-com1.p.rapidapi.com"
+        }
+
+        response = requests.get(url, headers=headers, params=querystring)
+
+        last_item = response.json().get("rates")["Fixed30Year"]["samples"][-1]
+
+        return jsonify(last_item["rate"])
+    except Exception as e:
+        return "error"

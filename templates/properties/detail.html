@@ -1,16 +1,122 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block content %}
 
-{% block content %}
+<!-- my-5 adds margin to top and bottom -->
+<div class="container my-5">
+  <h1 class="text-center mb-4">Property Details</h1>
 
-<h1>Property Details</h1>
-
-<p><strong>Address:</strong> {{ prop.address }}</p>
-    <p><strong>Price:</strong> ${{ prop.price }}</p>
+  <div class="card shadow-lg p-4">
+    <img src="{{ prop.image_src }}" alt="Property Image" class="mb-4" />
+    <p><strong>$</strong><strong id="prop-price">{{ prop.price }}</strong></p>
+    <p><strong>Address:</strong> {{ prop.address }}</p>
     <p><strong>Bedrooms:</strong> {{ prop.bedrooms }}</p>
     <p><strong>Bathrooms:</strong> {{ prop.bathrooms }}</p>
     <p><strong>Living Area:</strong> {{ prop.living_area }}</p>
-    <img src="{{ prop.img_src }}" alt="Property Image">
-    <br>
-    <a href="{{ url_for('homepage') }}">Back to Listings</a>
+    <br />
+    <h5>About this home</h5>
+    <p>{{ prop.description }}</p>
 
+    {% if g.user %}
+    <button class="add-favorite-btn" data-id="{{ prop.id }}">
+      {% if prop in g.user.properties %}
+      <i class="fa-solid fa-heart"></i>
+      {% else %}
+      <i class="fa-regular fa-heart"></i>
+      {% endif %}
+    </button>
+    {% endif %}
+
+    <div class="card mt-5 p-3">
+      <h5 class="text-center mb-3">
+        Monthly Payment Calculator
+        <i
+          class="fa-solid fa-circle-info"
+          title="This calculator provides an estimated monthly payment based on a 20% downpayment, 30-year-loan term, and current interest rate."
+        ></i>
+      </h5>
+      <div class="row">
+        <div class="col-6 p-2">
+          <!-- TODO: CALCULATE MONTHLY PAYMENT -->
+          <h6 class="mb-3">
+            Estimated payment: $<span id="total-monthly-payment"></span>
+          </h6>
+
+          <div class="d-flex justify-content-between">
+            <span>Principal & Interest</span
+            ><span id="principal-interest" class="text-end"></span>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <span>HOA</span
+            ><span id="monthly-hoa-fee" class="text-end"
+              >{{ prop.monthly_hoa_fee or 0 }}</span
+            >
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <span>Tax</span
+            ><span id="tax-annual-amount" class="text-end"
+              >{{ prop.tax_annual_amount or 0 }}</span
+            >
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <span>Insurance</span
+            ><span id="annual-homeowners-insurance" class="text-end"
+              >{{ prop.annual_homeowners_insurance }}</span
+            >
+          </div>
+        </div>
+
+        <div class="col-6 p-4">
+          <div class="mb-3">
+            <label for="home-price">Home Price</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input type="number" class="form-control" id="home-price" />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="downpayment">Downpayment</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input type="number" class="form-control" id="downpayment" />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="interest-rate">Interest Rate</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="interest-rate" />
+              <span class="input-group-text">%</span>
+            </div>
+          </div>
+
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="30-year-term"
+              checked
+            />
+            <label class="form-check-label" for="30-year-term">
+              30-Year-Fixed
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" id="15-year-term" />
+            <label class="form-check-label" for="15-year-term">
+              15-Year-Fixed
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a href="{{ url_for('homepage') }}" class="btn btn-outline-primary mt-3"
+      >Back to Listings</a
+    >
+  </div>
+</div>
+<script type="module" src="../../static/js/propertyDetail.js"></script>
 {% endblock %}

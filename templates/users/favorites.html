@@ -1,19 +1,10 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
+<div class="container text-center">
+  <h1 class="my-4">My Favorite Properties</h1>
 
-{% block content %}
-
-    <h1>My Favorite Properties</h1>
-
-    <div class="favorites-list">
-        {% for prop in properties %}
-            <div class="favorite-item">
-                <a href="{{ url_for('prop_detail', prop_id=prop.id) }}">
-                    <img src="{{ prop.imgSrc }}" alt="{{ prop.address }}">
-                    <h3>{{ prop.address }}</h3>
-                    <p>Price: ${{ prop.price }}</p>
-                </a>
-            </div>
-        {% endfor %}
-    </div>
-
+  {% if properties %} {{ macros.render_card(properties)}} {% else %}
+  <a href="{{url_for('homepage')}}">Find My Favorite Homes</a>
+  {% endif %}
+</div>
+<script src="../../static/js/home.js"></script>
 {% endblock %}

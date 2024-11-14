@@ -1,9 +1,42 @@
-{% macro render_form(form, exclude_fields=[]) %}
-  {{ form.hidden_tag() }}
-  {% for field in form if field.widget.input_type != 'hidden' and field.name not in exclude_fields %}
-    {% for error in field.errors %}
-        <span class="text-danger">{{ error }}</span>
-    {% endfor %}
-    {{ field(placeholder=field.label.text, class="form-control") }}
+{% macro render_form(form, prefix='') %} {{ form.csrf_token(class="hidden",
+id=prefix+'csrf_token') }} {% for field in form if field.widget.input_type !=
+'hidden' and field.name not in exclude_fields %} {% for error in field.errors %}
+<span class="text-danger">{{ error }}</span>
+{% endfor %} {{ field(placeholder=field.label.text, class="form-control my-4",
+id=prefix+field.id) }} {% endfor %} {% endmacro %}
+
+<!-- Property Card -->
+{% macro render_card(properties) %}
+<div class="row property-list">
+  {% for prop in properties %}
+  <div class="col-md-4 mb-4">
+    <div class="card">
+      <a href="{{ url_for('get_prop_detail', prop_id=prop.id) }}">
+        <img
+          src="{{ prop.image_src }}"
+          class="card-img-top"
+          alt="property Image"
+        />
+        <div class="card-body">
+          <h5 class="card-title">${{ prop.price }}</h5>
+          <p class="card-text">
+            <strong>Bedrooms:</strong> {{ prop.bedrooms }}<br />
+            <strong>Bathrooms:</strong> {{ prop.bathrooms }}<br />
+            {{ prop.address }}
+          </p>
+        </div>
+      </a>
+      {% if g.user %}
+      <button class="add-favorite-btn" data-id="{{ prop.id }}">
+        {% if prop in g.user.properties %}
+        <i class="fa-solid fa-heart"></i>
+        {% else %}
+        <i class="fa-regular fa-heart"></i>
+        {% endif %}
+      </button>
+      {% endif %}
+    </div>
+  </div>
   {% endfor %}
+</div>
 {% endmacro %}

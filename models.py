@@ -100,7 +100,13 @@ class Property(db.Model):
 
     # TODO: Provide a default image url
     # Define a non-nullable image_url column
-    image_src = db.Column(db.String(200))
+    image_src = db.Column(db.String(200), default=('/static/images/single-family-home.jpg'))
+
+    description = db.Column(db.Text)
+    monthly_hoa_fee = db.Column(db.Integer)
+    annual_homeowners_insurance = db.Column(db.Integer)
+    tax_annual_amount = db.Column(db.Integer)
+    is_fetched = db.Column(db.Boolean)
 
     # Dunder methods (double underscores) returns a string representation used for debugging
     def __repr__(self):

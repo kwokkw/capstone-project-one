@@ -15,30 +15,141 @@
 
     <link rel="stylesheet" href="/static/stylesheets/style.css" />
 
-    <!-- TODO: UPDATE FAVICON -->
-    <!-- <link rel="shortcut icon" href="/static/favicon.ico"> -->
+    <link rel="shortcut icon" href="../static/images/favicon.ico" />
   </head>
 
   <body class="{% block body_class %}{% endblock %}">
-
     <header id="header">
       <nav class="navbar navbar-expand">
-        <div class="container-fluid">
-          <div class="navbar-header">
-            <a href="{{ url_for('homepage') }}" class="navbar-brand">
-              <img src="" alt="logo" />
-              <span>Real Estate Dashboard</span>
-            </a>
-          </div>
+        <div class="container-fluid text-center row">
+          <ul class="nav col justify-content-center">
+            <li class="nav-item"><a href="" class="nav-link">Buy</a></li>
+            <li class="nav-item"><a href="" class="nav-link">Sell</a></li>
+            <li class="nav-item"><a href="" class="nav-link">Rent</a></li>
+          </ul>
+          <a href="{{ url_for('homepage') }}" class="navbar-brand col">
+            <img src="/static/images/logo.png" alt="logo" class="logo" />
+          </a>
+          <ul class="nav col justify-content-center">
+            {% if g.user %}
+            <li class="nav-item">
+              <a href="{{ url_for('favorites_list')}}" class="nav-link"
+                >Favorite Homes</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ url_for('profile') }}" class="nav-link">Profile</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <!-- data-bs-toggle="modal" used to toggle a modal, making it appear or disappear. -->
+              <!-- data-bs-target="#target-id" specifies the target element to be affected by the action triggered by the current element. For example, it can be used to specify the modal to be shown or hidden. -->
+              <button
+                type="button"
+                class="nav-link"
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop-login"
+              >
+                Login
+              </button>
+            </li>
 
-          {% if g.user %}
-          <a href="{{ url_for('favorites_list')}}">Favorite Homes</a>
-          <a href="{{ url_for('logout') }}">Logout</a>
-          <a href="{{ url_for('profile') }}">Profile</a>
-          {% else %}
-          <a href="{{ url_for('signup') }}">Sign up</a>
-          <a href="{{ url_for('login') }}">Login</a>
-          {% endif %}
+            <li class="nav-item">
+              <button
+                class="nav-link"
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop-signup"
+              >
+                Sign up
+              </button>
+            </li>
+
+            <!-- MODAL -->
+            <!-- backdrop is set to static, the modal will not close when clicking outside of it. -->
+            <div
+              class="modal fade"
+              id="staticBackdrop-login"
+              data-bs-backdrop="static"
+            >
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5">Login</h1>
+                    <!-- data-bs-dismiss="modal" used to dismiss a modal, closing it. -->
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                    ></button>
+                  </div>
+
+                  <div class="modal-body">
+                    <form
+                      action="{{url_for('login')}}"
+                      method="POST"
+                      id="user_form"
+                    >
+                      {{ macros.render_form(loginForm, prefix='login-') }}
+
+                      <div class="d-grid gap-2">
+                        <button
+                          class="btn btn-primary btn-block btn-lg"
+                          id="login-btn"
+                        >
+                          Log in
+                        </button>
+                        <a href="">Forgot your password?</a>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="modal fade"
+              id="staticBackdrop-signup"
+              data-bs-backdrop="static"
+            >
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5">Sign Up</h1>
+                    <!-- data-bs-dismiss="modal" used to dismiss a modal, closing it. -->
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                    ></button>
+                  </div>
+
+                  <div class="modal-body">
+                    <!-- container for error messages -->
+                    <form
+                      action="{{ url_for('signup') }}"
+                      method="POST"
+                      id="signup-form"
+                    >
+                      {{ macros.render_form(signupForm, prefix='signup-') }}
+
+                      <div class="d-grid gap-2">
+                        <button
+                          class="btn btn-primary btn-block btn-lg"
+                          id="signup-btn"
+                        >
+                          Sign Up
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </ul>
         </div>
       </nav>
     </header>
@@ -49,7 +160,7 @@
       {% endfor %} {% block content %} {% endblock %}
     </main>
 
-    <footer id="footer">
+    <footer id="footer" class="my-4 text-center">
       <p>&copy; 2024 Real Estate Dashboard</p>
     </footer>
 
@@ -62,6 +173,6 @@
       crossorigin="anonymous"
     ></script>
 
-    <script src="/static/app.js"></script>
+    <!-- <script src="/static/app.js"></script> -->
   </body>
 </html>

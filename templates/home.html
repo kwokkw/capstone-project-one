@@ -1,41 +1,13 @@
 {% extends 'base.html' %} {% block content %}
-<div class="container my-4">
-  <h1 class="text-center">Properties for Sale</h1>
 
-  <div class="row property-list">
-    {% for prop in properties %}
-    <div class="col-md-4 mb-4">
-      <div class="card">
-        <img
-          src="{{ prop.imgSrc }}"
-          class="card-img-top"
-          alt="property Image"
-        />
-        <div class="card-body">
-          <a href="{{ url_for('prop_detail', prop_id=prop.id) }}">
-            <h5 class="card-title">${{ prop.price }}</h5>
-            <p class="card-text">
-              <strong>Bedrooms:</strong> {{ prop.bedrooms }}<br />
-              <strong>Bathrooms:</strong> {{ prop.bathrooms }}<br />
-              {{ prop.address }}
-            </p>
-          </a>
-          <!-- TODO: LET'S REMOVE THE BUTTON -->
-          <!-- TODO: CHANGE IT TO A HEART -->
-          <!-- TODO: MOVE THE HEART TO TOP-RIGHT CORNER -->
-          {% if g.user %}
-          <button class="add-favorite-btn" data-id="{{ prop.id }}">
-            {% if prop in g.user.properties %}
-            <i class="fa-solid fa-heart"></i>
-            {% else %}
-            <i class="fa-regular fa-heart"></i>
-            {% endif %}
-          </button>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-    {% endfor %}
+<section class="hero">
+  <img src="/static/images/hero.jpg" alt="hero image" class="hero-img" />
+  <div class="hero-text">
+    <h1>Welcome to Our Site</h1>
+    <p>Discover amazing properties with us.</p>
   </div>
-</div>
+</section>
+
+<div class="container my-4">{{ macros.render_card(properties) }}</div>
+<script type="module" src="../static/js/home.js"></script>
 {% endblock %}

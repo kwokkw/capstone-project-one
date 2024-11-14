@@ -2,7 +2,7 @@ from app import app, db
 from models import User, Property, Favorites
 
 with app.app_context():
-    # Clear esisting dta
+    # Clear existing dta
     db.drop_all()
     db.create_all()
 
@@ -18,7 +18,6 @@ with app.app_context():
             bedrooms=4,
             bathrooms=2,
             living_area=1500,
-            image_src="https://photos.zillowstatic.com/fp/fcb17e90b0a065b9e0a7eea321e24b40-p_e.jpg",
         )
     property2 = Property(
             zpid="56877746",
@@ -27,7 +26,6 @@ with app.app_context():
             bedrooms=3,
             bathrooms=2,
             living_area=2500,
-            image_src="https://photos.zillowstatic.com/fp/fcb17e90b0a065b9e0a7eea321e24b40-p_e.jpg",
         )
 
 
