@@ -6,8 +6,33 @@
     <h1>Welcome to Our Site</h1>
     <p>Discover amazing properties with us.</p>
   </div>
+
+  <!-- Search container -->
+  <div class="search-container z-2">
+    <form
+      action="{{ url_for('get_prop_detail') }}"
+      class="input-group input-group-lg"
+    >
+      <input
+        type="text"
+        name="address"
+        id="address-input"
+        class="form-control text-center"
+        placeholder="Enter an address, neighborhood, city, or ZIP code"
+      />
+      <button class="btn btn-light" type="submit" id="button-addon2">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+    </form>
+
+    <!-- Predictive text -->
+    <div class="suggestions d-none">
+      <ul class="list-group"></ul>
+    </div>
+  </div>
 </section>
 
+<!-- Property list -->
 <div class="container my-4">{{ macros.render_card(properties) }}</div>
 <script type="module" src="../static/js/home.js"></script>
 {% endblock %}

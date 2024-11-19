@@ -1,7 +1,8 @@
 # Springboard - Capstone Project One (Real Estate Dashboard)
 
 <!-- TODO: do I need Restful APIs? -->
-It is focused on building a database-driven website powered by an external API, using technologies like Python/Flask, PostgreSQL, SQLAlchemy, Jinja, RESTful APIs, JavaScript, HTML, and CSS. The project will integrate features related to real estate. 
+
+It is focused on building a database-driven website powered by an external API, using technologies like Python/Flask, PostgreSQL, SQLAlchemy, Jinja, RESTful APIs, JavaScript, HTML, and CSS. The project will integrate features related to real estate.
 
 ## Table of contents
 
@@ -23,33 +24,33 @@ It is focused on building a database-driven website powered by an external API, 
 
 1.  Purpose and Scope
 
-  The project aims to provides users with a way to explore real estate listings, save favorite properties, and potentially personalize their seach experience. Core functionalities will focus on:
+The project aims to provides users with a way to explore real estate listings, save favorite properties, and potentially personalize their seach experience. Core functionalities will focus on:
 
-  - Displaying property information sourced from an external real estate API.
-  - Managing user accounts and their interactions with property data.
-  - Enabling search, filtering, and saving of property listings. 
+- Displaying property information sourced from an external real estate API.
+- Managing user accounts and their interactions with property data.
+- Enabling search, filtering, and saving of property listings.
 
 2.  Key Features
 
-  - User Authentication
-  - Property Listings and Details
-  - Favorites
+- User Authentication
+- Property Listings and Details
+- Favorites
+- Predictive Text Address Search
 
 3.  Database Design
 
-  - Users Table
-  - Properties Table
-  - Favorites Table
+- Users Table
+- Properties Table
+- Favorites Table
 
 4.  User Flow
 
-  A user's journey might look like this:
+A user's journey might look like this:
 
-  1.  Authentication: The user signs up or logs in.
-  2.  Property Search: They search for properties by specifying criteria like location, price range, or proerty type. 
-  3.  View Details: Clicking a propety opens a detailed view with additional information.
-  4.  Favorites Management: They can save properties to theri favorites, accessible from a dedicated page. 
-
+1.  Authentication: The user signs up or logs in.
+2.  Property Search: They search for properties by specifying criteria like location, price range, or proerty type.
+3.  View Details: Clicking a propety opens a detailed view with additional information.
+4.  Favorites Management: They can save properties to theri favorites, accessible from a dedicated page.
 
 ### The challenge
 
@@ -62,65 +63,76 @@ It is focused on building a database-driven website powered by an external API, 
 ## My process
 
 1.  Planning & Research
-  - Goal Setting: Set project goals focused on creating a database-driven real estate dashboard.
-  - Feature Requirements: Prioritized core functionalities, such as user authentication, property listings, and saving favorites.
-  - API Selection
+
+- Goal Setting: Set project goals focused on creating a database-driven real estate dashboard.
+- Feature Requirements: Prioritized core functionalities, such as user authentication, property listings, and saving favorites.
+- API Selection
 
 2.  Setting Up the Environment
 
 3.  Database Modeling
-  - Models Defined: Designed `User`, `Property`, and `Favorite` tables in `models.py`
-  - Relationships: Created relationships between tables to link users with their favorite properties.
-  - Data Seeding: Seeded sample data for testing purposes. 
+
+- Models Defined: Designed `User`, `Property`, and `Favorite` tables in `models.py`
+- Relationships: Created relationships between tables to link users with their favorite properties.
+- Data Seeding: Seeded sample data for testing purposes.
 
 4.  Building Core Features
 
-5.  Testing & Debugging 
+5.  Testing & Debugging
 
 ### Built with
 
 Tech Stack Breakdown
 
-  - Languages:
-    - Python: Backend scripting and logic
-    - JavaScirpt: Client-side scripting
-    - HTML: Markup for structuring web pages
-    - CSS: Styling web pages
+- Languages:
 
-  - Framworks and Libraries:
-    - Flask: Web framework for routing, views, and backend functionality
-    - SQLAlchemy: ORM (Object Relational Mapper) for handling database interactions
-    - Jinja: Templating engine for rendering dynamic HTML
-    - WTForms: Form validation and handling in Flask
+  - Python: Backend scripting and logic
+  - JavaScirpt: Client-side scripting
+  - HTML: Markup for structuring web pages
+  - CSS: Styling web pages
 
-  - Database:
-    - PostgreSQL: Relational database to store and manage property and user data
+- Framworks and Libraries:
 
-  - API Integration:
-    - <!-- TODO: A real estate API that supply the property data -->
-    - External Real Estate API: provides property data
+  - Flask: Web framework for routing, views, and backend functionality
+  - SQLAlchemy: ORM (Object Relational Mapper) for handling database interactions
+  - Jinja: Templating engine for rendering dynamic HTML
+  - WTForms: Form validation and handling in Flask
 
-  - Tools and Platforms:
-    - Git: Version control system to manage and track code changes
-    - GitHub: Repository hosting service for collaboration and version tracking
-    - <!-- TODO: Do I need Supabase database service? -->
+- Database:
+
+  - PostgreSQL: Relational database to store and manage property and user data
+
+- API Integration:
+
+  - <!-- TODO: A real estate API that supply the property data -->
+  - External Real Estate API: provides property data
+
+- Tools and Platforms:
+  - Git: Version control system to manage and track code changes
+  - GitHub: Repository hosting service for collaboration and version tracking
+  - <!-- TODO: Do I need Supabase database service? -->
 
 ### What I learned
 
+- I have a modal containing a sign up form. When a user submits the form, the data (username, email, etc.) is sent to the Flask backend. If the signup fails due to a specific error (username or email already taken), how can I display the appropriate error message within the modal itself, rather than redirecting to a different page or rendering a new template?
+
+  I first thought about using JavaScirpt and AJAX to display error messages within the modal after form submission. However, I see that WTForms/Jinja template already provides functionalities for displaying error messages. Should I leverage WTForms for displaying error messages, or can I still utilize AJAX approach?
+
+  I am confused about how to display WTForms error messages directly within a modal without using AJAX. From my understanding, the backend should return a new template or redirect to a different page in order to display the errors correctly.
+
+  1. Update the Backend Logic
+  2. Update the Template for Error Display
+  3. Add JavaScript to Open the Modal if There Are Errors
 
 ### Continued development
 
-
 ### Useful resources
-
 
 ## Author
 
-
 ## Acknowledgments
 
-
-## Time estimate 
+## Time estimate
 
 Springboard: 41 - 57 Hours
 
@@ -133,9 +145,10 @@ Project Timeline
 - **Session 1**
 
   - **Task 1**: Set up Flask application and project structure (1 hour)
+
     - Create necessary directories and files (`app.py`, `README.md`, etc.).
-    - Initialize virtual environment and install dependencies. 
-  
+    - Initialize virtual environment and install dependencies.
+
   - **Task 2**: Database Design & Implementation (2 hours)
     - Define schema for `Users`, `Properties`, and `Favorites` tables.
     - Set up PostgreSQL database and create tables.
@@ -143,6 +156,7 @@ Project Timeline
 - **Session 2**
 
   - **Task 3**: Build Data Models with SQLAlchemy (1-2 hours)
+
     - Create SQLAlchemy models for `Users`, `Properties`, and `Favorites`.
     - Define relationships and basic validations.
 
@@ -153,6 +167,7 @@ Project Timeline
 - **Session 3**
 
   - **Task 5**: Basic CRUD Routes for Properties (2 hours)
+
     - Set up routes for displaying property listings and details.
     - Implement functions to query data from the database.
 
@@ -167,7 +182,9 @@ Project Timeline
 #### **Goal**: Implement frontend, user authentication, and finalize documentation and testing.
 
 - **Session 1**
+
   - **Task 7**: Build User Authentication (2 hours)
+
     - Set up registration, login, and logout routes using Flask-WTF and Flask-Bcrypt.
     - Create session management and protect user-only routes.
 
@@ -178,6 +195,7 @@ Project Timeline
 - **Session 2**
 
   - **Task 9**: Implement User Favorites Functionality (2 hours)
+
     - Create “Add to Favorites” feature, linking properties to users.
     - Build out favorites view to display saved properties.
 
@@ -188,13 +206,13 @@ Project Timeline
 - **Session 3**
 
   - **Task 11**: Testing & Debugging (1 hour)
+
     - Test all routes, forms, and database actions for smooth functionality.
     - Debug any issues in the user flow or API integration.
 
   - **Task 12**: Deployment & Documentation (1 hour)
     - Deploy the application to a platform like Heroku or Vercel.
     - Complete README with installation steps, usage instructions, and "Built With" section.
-
 
 - Setup an user setting/dashboard route.
 - Add styling

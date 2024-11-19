@@ -24,8 +24,13 @@
         <div class="container-fluid text-center row">
           <ul class="nav col justify-content-center">
             <li class="nav-item"><a href="" class="nav-link">Buy</a></li>
-            <li class="nav-item"><a href="" class="nav-link">Sell</a></li>
-            <li class="nav-item"><a href="" class="nav-link">Rent</a></li>
+            <li class="nav-item">
+              <a class="nav-link disabled">Sell</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link disabled">Rent</a>
+            </li>
           </ul>
           <a href="{{ url_for('homepage') }}" class="navbar-brand col">
             <img src="/static/images/logo.png" alt="logo" class="logo" />
@@ -127,7 +132,6 @@
                   </div>
 
                   <div class="modal-body">
-                    <!-- container for error messages -->
                     <form
                       action="{{ url_for('signup') }}"
                       method="POST"

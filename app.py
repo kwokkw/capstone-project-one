@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, redirect, url_for, session, flash, g, jsonify
+from flask import Flask, render_template, redirect, url_for, session, flash, g, jsonify, request
 from models import db, connect_db, User, Property, Favorites
 from forms import SignupForm, LoginForm, UserEditForm
 from sqlalchemy.exc import IntegrityError
@@ -77,7 +77,6 @@ def save_properties_to_database(properties):
             bedrooms=prop["bedrooms"],
             bathrooms=prop["bathrooms"],
             living_area=prop["livingArea"],
-            # image_src=prop["imgSrc"],
         )
 
         db.session.add(new_prop)
@@ -104,11 +103,12 @@ def signup():
         # Check if username already exists
         if User.query.filter_by(username=form.username.data).first():
             form.username.errors.append("Username already taken")
+            # NOT SURE WHAT TO RETURN
 
         # Check if email already exists
         if User.query.filter_by(email=form.email.data).first():
             flash("Email already taken", 'danger')
-            return render_template('users/signup.html', form=form)
+            # NOT SURE WHAT TO RETURN
 
         # If no conflicts, proceed to create the new user
         try:
@@ -212,7 +212,7 @@ def get_properties():
 
     url = 'https://zillow-com1.p.rapidapi.com/propertyExtendedSearch'
 
-    querystring = {"location":"Los Angeles, CA","status_type":"ForSale"}
+    querystring = {"location":"Los Angeles, CA; Seattle, WA; Miami, FL; Chicago, IL; San Antonio, TX","status_type":"ForSale","home_type":"Houses"}
 
     headers = {
         'x-rapidapi-key': API_KEY,
@@ -231,14 +231,18 @@ def get_properties():
         return ("Error: Unable to fetch data"), 500
 
 
-@app.route('/api/property_detail/<int:prop_id>', methods=['GET'])
-def get_prop_detail(prop_id):
 
-    prop = Property.query.get_or_404(prop_id)    
+@app.route('/api/property_detail', methods=['GET'])
+def get_prop_detail():
+
+    address = request.args['address']
+    prop = Property.query.filter_by(address=address).first_or_404()
+    loginForm = LoginForm()
+    signupForm = SignupForm()
 
     if prop.is_fetched:
 
-        return render_template('/properties/detail.html', prop=prop)
+        return render_template('/properties/detail.html', prop=prop, loginForm=loginForm, signupForm=signupForm)
     
     url = "https://zillow-com1.p.rapidapi.com/property"
 
@@ -284,3 +288,13 @@ def get_interest_rate():
         return jsonify(last_item["rate"])
     except Exception as e:
         return "error"
+    
+
+# Search address from database
+@app.route('/search_address')
+def search_address():
+    q = request.args['q']
+
+    results = Property.query.filter(Property.address.ilike(f"%{q}%")).all()
+    address = [prop.address for prop in results]
+    return jsonify(address)
