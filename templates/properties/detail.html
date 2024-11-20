@@ -35,7 +35,6 @@
       </h5>
       <div class="row">
         <div class="col-6 p-2">
-          <!-- TODO: CALCULATE MONTHLY PAYMENT -->
           <h6 class="mb-3">
             Estimated payment: $<span id="total-monthly-payment"></span>
           </h6>
@@ -92,23 +91,21 @@
             </div>
           </div>
 
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              id="30-year-term"
-              checked
-            />
-            <label class="form-check-label" for="30-year-term">
-              30-Year-Fixed
-            </label>
+          <div
+            class="mb-3 form-check d-flex d-flex justify-content-start gap-5"
+          >
+            <div>
+              <input type="radio" value="30" name="terms" id="30-year-loan" />
+              <label for="30-year-loan">30 Year Fixed</label>
+            </div>
+            <div>
+              <input type="radio" value="15" name="terms" id="15-year-loan" />
+              <label for="15-year-loan">15 Year Fixed</label>
+            </div>
           </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" id="15-year-term" />
-            <label class="form-check-label" for="15-year-term">
-              15-Year-Fixed
-            </label>
-          </div>
+          <button class="btn btn-primary" id="calculate-payment-btn">
+            Apply Changes
+          </button>
         </div>
       </div>
     </div>

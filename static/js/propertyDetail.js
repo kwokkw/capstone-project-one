@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     monthlyInsurance.toFixed(2);
 
   calculateMonthlyPayment();
+
   const btn = document.querySelector(".add-favorite-btn");
   if (btn) {
     btn.addEventListener("click", function (evt) {
@@ -34,12 +35,36 @@ document.addEventListener("DOMContentLoaded", () => {
       toggleFavoriteProps(propId, btn);
     });
   }
+
+  // Calculate monthly payment based on user input
+  document
+    .querySelector("#calculate-payment-btn")
+    .addEventListener("click", function () {
+      const homePrice = parseFloat(document.querySelector("#home-price").value);
+      const downpayment = parseFloat(
+        document.querySelector("#downpayment").value
+      );
+      const interestRate =
+        parseFloat(document.querySelector("#interest-rate").value) / 100;
+      const selectedTerm = parseFloat(
+        document.querySelector('input[name="terms"]:checked').value
+      );
+
+      const principal = homePrice - downpayment;
+
+      principalInterest.textContent = calculatePrincipalAndInterest(
+        principal,
+        selectedTerm,
+        interestRate
+      ).toFixed(2);
+
+      calculateMonthlyPayment();
+    });
 });
 
 // async function calculatePrincipalAndInterest(loanAmount, years) {
-function calculatePrincipalAndInterest(loanAmount, years) {
-  // const interestRate = (await getInterestRate()) || 0.06;
-  const interestRate = 0.06;
+function calculatePrincipalAndInterest(loanAmount, years, interestRate = 0.06) {
+  // const interestRate = (await getInterestRate());
   const monthlyRate = interestRate / 12;
   const numberOfPayments = years * 12;
 
@@ -52,8 +77,6 @@ function calculatePrincipalAndInterest(loanAmount, years) {
 
 function calculateMonthlyPayment() {
   const principalInterestInput = document.getElementById("principal-interest");
-  console.log(principalInterestInput.innerText);
-
   const taxesInput = document.getElementById("tax-annual-amount");
   const insuranceInput = document.getElementById("annual-homeowners-insurance");
   const hoaInput = document.getElementById("monthly-hoa-fee");

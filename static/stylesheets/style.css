@@ -95,6 +95,10 @@
   text-align: left;
 }
 
+ul .nav-item {
+  font-size: 1.5rem;
+}
+
 ul li {
   list-style: none;
   padding: 0.25rem 0.5rem;
