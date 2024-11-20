@@ -36,6 +36,26 @@ class User(db.Model):
     # Dunder methods (double underscores) returns a string representation used for debugging
     def __repr__(self):
         return f'<User #{self.id}: {self.username}>'
+    
+
+    def change_password(self, current_password, new_password):
+        """ Handle the password change """
+
+        # Check if the provided current password matches stored hash password
+        if not bcrypt.check_password_hash(self.hashed_password, current_password):
+
+            # Current password provided does not match the one in database
+            # Password change failed
+            return False
+        
+        # Hashes the new password using Bcrypt and update user password
+        self.password = bcrypt.generate_password_hash(new_password).decode('UTF-8')
+
+        # Save the user with the new password
+        db.session.commit()
+
+        # Password change successful
+        return True
 
     @classmethod
     def signup(cls, username, email, password):

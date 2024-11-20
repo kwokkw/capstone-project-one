@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, render_template, redirect, url_for, session, flash, g, jsonify, request
 from models import db, connect_db, User, Property, Favorites
-from forms import SignupForm, LoginForm, UserEditForm
+from forms import SignupForm, LoginForm, UserEditForm, ChangePasswordForm
 from sqlalchemy.exc import IntegrityError
 from functools import wraps
 from flask_debugtoolbar import DebugToolbarExtension
@@ -134,11 +134,12 @@ def signup():
 def login():
     """Handle user login."""
 
-    form = LoginForm()
+    loginForm = LoginForm()
+    signupForm = SignupForm()
 
-    if form.validate_on_submit():
-        user = User.authenticate(form.username.data,
-                                 form.password.data)
+    if loginForm.validate_on_submit():
+        user = User.authenticate(loginForm.username.data,
+                                 loginForm.password.data)
 
         if user:
             do_login(user)
@@ -147,7 +148,7 @@ def login():
 
         flash("Invalid credentials.", 'danger')
 
-    return render_template('users/login.html', form=form)
+    return render_template('users/login.html', loginForm=loginForm, signupForm=signupForm)
 
     
 @app.route('/logout')
@@ -163,17 +164,52 @@ def logout():
 @login_required
 def profile():
 
-    form = UserEditForm()
+    # Pre-populate the form with current user's data
+    form = UserEditForm(obj=g.user)
+    change_password_form = ChangePasswordForm()
 
     if form.validate_on_submit():
         breakpoint()
-        g.user.username = form.username.data
-        g.user.email = form.email.data
-        db.session.commit()
-        flash("Account settings updated!", "success")
-        return redirect(url_for('profile'))
+        password = form.password.data
+        user = User.authenticate(g.user.username, password)
 
-    return render_template('users/edit.html', form=form)
+        if user:
+            g.user.username = form.username.data
+            g.user.email = form.email.data
+            db.session.commit()
+            flash("Account settings updated!", "success")
+            return redirect(url_for('profile'))
+
+    return render_template('users/edit.html', form=form, change_password_form=change_password_form)
+
+
+@app.route('/change_password', methods=['POST'])
+@login_required
+def change_password():
+
+    form = ChangePasswordForm()
+    breakpoint()
+    if form.validate_on_submit():
+        if g.user.change_password(form.current_password.data, form.new_password.data):
+            flash("Password successfully updated.", "success")
+            return redirect(url_for('profile'))
+        else: 
+            flash("Incorrect current password.", "danger")
+
+    return redirect(url_for('profile'))
+
+
+@app.route('/users/delete', methods=["POST"])
+@login_required
+def delete_user():
+    """Delete user."""
+
+    do_logout()
+    flash('User account has been deleted.', 'success')
+    db.session.delete(g.user)
+    db.session.commit()
+
+    return redirect(url_for('homepage'))
 
 
 @app.route('/favorites/<int:prop_id>/', methods=['POST'])
@@ -293,8 +329,28 @@ def get_interest_rate():
 # Search address from database
 @app.route('/search_address')
 def search_address():
+
     q = request.args['q']
 
     results = Property.query.filter(Property.address.ilike(f"%{q}%")).all()
     address = [prop.address for prop in results]
     return jsonify(address)
+
+
+##############################################################################
+# 404 error route
+
+# When a user tries to access a resource (such as a webpage) that doesn't exist on the server.
+# 404 means "Not Found"
+# Create a 404 error handler with `@app.errorhandler` decorator
+# This decorator tells Flask to handle 404 errors with `page_not_found` function
+@app.errorhandler(404)
+def page_not_found(e):
+    """ custom 404 error page """
+
+    loginForm = LoginForm()
+    signupForm = SignupForm()
+
+    # `, 404`: sets the status code of the HTTP response to 404
+    # without `, 404`, Flask would return a `200 OK` response along with `404.html`
+    return render_template('404.html', error=e, loginForm=loginForm, signupForm=signupForm), 404

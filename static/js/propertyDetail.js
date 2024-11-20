@@ -1,13 +1,10 @@
 import { toggleFavoriteProps } from "./helper.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Initializes the page
   const loanAmount =
     parseFloat(document.getElementById("prop-price").textContent) * 0.8;
-  const years = 30;
-  const monthlyPrincipalInterest = calculatePrincipalAndInterest(
-    loanAmount,
-    years
-  );
+  const monthlyPrincipalInterest = calculatePrincipalAndInterest(loanAmount);
 
   const principalInterest = document.getElementById("principal-interest");
   const hoa = parseFloat(document.getElementById("monthly-hoa-fee").innerText);
@@ -18,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("annual-homeowners-insurance").innerText
     ) / 12;
 
+  // Update DOM values
   principalInterest.innerText = monthlyPrincipalInterest.toFixed(2);
   document.getElementById("monthly-hoa-fee").innerText = hoa.toFixed(2);
   document.getElementById("tax-annual-amount").innerText =
@@ -27,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   calculateMonthlyPayment();
 
+  // Favorite property button
   const btn = document.querySelector(".add-favorite-btn");
   if (btn) {
     btn.addEventListener("click", function (evt) {
@@ -63,7 +62,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // async function calculatePrincipalAndInterest(loanAmount, years) {
-function calculatePrincipalAndInterest(loanAmount, years, interestRate = 0.06) {
+function calculatePrincipalAndInterest(
+  loanAmount,
+  years = 30,
+  interestRate = 0.06
+) {
   // const interestRate = (await getInterestRate());
   const monthlyRate = interestRate / 12;
   const numberOfPayments = years * 12;

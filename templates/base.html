@@ -160,7 +160,11 @@
 
     <main id="main-content">
       {% for category, message in get_flashed_messages(with_categories=True) %}
-      <div class="alert alert-{{ category }}">{{ message }}</div>
+      <div
+        class="alert alert-{{ category }} border border-{{ category }} mt-4 text-center"
+      >
+        {{ message }}
+      </div>
       {% endfor %} {% block content %} {% endblock %}
     </main>
 
