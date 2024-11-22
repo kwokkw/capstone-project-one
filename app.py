@@ -119,7 +119,7 @@ def signup():
             )
             db.session.commit()
             do_login(user)
-            flash('Welcome ', user.username)
+            flash(f'Welcome {user.username}', 'success')
             return redirect(url_for('homepage'))
 
         except IntegrityError:
