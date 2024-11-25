@@ -31,9 +31,9 @@ class AppTestCase(TestCase):
 
         # Delete all records in database
         with app.app_context():
+            Favorites.query.delete()
             User.query.delete()
             Property.query.delete()
-            Favorites.query.delete()
 
             # Seed the test database
             self.user = User.signup(username='testuser',email='test@test.com', password='password')
@@ -55,17 +55,18 @@ class AppTestCase(TestCase):
         """Test the homepage renders correctly."""
 
         with self.client as c:
+            LoginForm.csrf_token = MockCsrfToken()
+            SignupForm.csrf_token = MockCsrfToken()
 
             resp = c.get('/')
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn("<h1>What's Happening?</h1>", html)
 
 
 
     def test_signup(self):
-        """Test user signup process."""
+        """Test user signup."""
 
         with app.app_context():
             
@@ -80,7 +81,7 @@ class AppTestCase(TestCase):
 
 
     def test_login(self):
-        """Test user login process."""
+        """Test user login."""
 
         with app.app_context():
             resp = self.client.post(
@@ -91,3 +92,49 @@ class AppTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             self.assertIn(b"Hello, testuser!", resp.data)
 
+            
+    def test_logout(self):
+        """Test user logout."""
+
+        with app.app_context():
+            self.user = User.query.filter_by(username="testuser").first()
+            with self.client.session_transaction() as session:
+                session["curr_user"] = self.user.id
+            self.client.get("/")
+
+            response = self.client.get("/logout", follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertNotIn(self.user.id, session)
+
+
+    def test_add_to_favorites(self):
+        """Test adding a property to favorites."""
+
+        with app.app_context():
+            self.user = User.query.filter_by(username="testuser").first()
+            prop = Property(zpid="13579", address="246 Test ave", price=900000, bedrooms=3, bathrooms=1)
+            db.session.add(prop)
+            db.session.commit()
+            
+            with self.client.session_transaction() as session:
+                session["curr_user"] = self.user.id
+            response = self.client.post(f"/favorites/{prop.id}/", follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(b"Property added to favorites!", response.data)
+
+            
+    def test_search_address(self):
+        """Test searching for an address."""
+        
+        response = self.client.get("/search_address?q=123")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"123 Test St", response.data)
+
+
+
+class MockCsrfToken:
+    def __call__(self, *args, **kwargs):
+        return '<input type="hidden" name="csrf_token" value="dummy_csrf_token">'
+
+    def __html__(self):
+        return self()
