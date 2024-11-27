@@ -17,7 +17,7 @@ app = Flask(__name__)
 
 # Configuration settings
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql:///real_estate_dashboard')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SUPABASE_DB_URL', 'postgresql:///real_estate_dashboard')
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_ECHO'] = False
